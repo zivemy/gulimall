@@ -5,6 +5,8 @@ import java.util.Map;
 
 //import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,10 +28,35 @@ import com.zhaimy.common.utils.R;
  * @date 2020-10-17 23:45:37
  */
 @RestController
+@RefreshScope
 @RequestMapping("coupon/coupon")
 public class CouponController {
     @Autowired
     private CouponService couponService;
+
+
+    @Value("${coupon.user.name}")
+    private String name;
+    @Value("${coupon.user.age}")
+    private Integer age;
+
+    @RequestMapping("/testconfig")
+    public R testconfig(){
+        return R.ok().put("name",name).put("age",age);
+    }
+
+
+
+    /**
+     * 查询会员的所有优惠券信息,测试远程调用
+     * @return
+     */
+    @RequestMapping("/member/list")
+    public R memberCoupons(){
+        CouponEntity entity = new CouponEntity();
+        entity.setCouponName("满10减1");
+        return R.ok().put("coupons",Arrays.asList(entity));
+    }
 
     /**
      * 列表
